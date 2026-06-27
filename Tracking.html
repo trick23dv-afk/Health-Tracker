@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Health Tracker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background: #f4f6f8;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    form {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px 15px;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+    th {
+      background: #007bff;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <h1>Blood Pressure & Blood Sugar Tracker</h1>
+
+  <form id="trackerForm">
+    <label>Patient Name:
+      <input type="text" id="name" required>
+    </label>
+    <label>Systolic (mmHg):
+      <input type="number" id="systolic" required>
+    </label>
+    <label>Diastolic (mmHg):
+      <input type="number" id="diastolic" required>
+    </label>
+    <label>Blood Sugar (mg/dL):
+      <input type="number" id="sugar" required>
+    </label>
+    <button type="submit">Add Record</button>
+  </form>
+
+  <table id="recordsTable">
+    <thead>
+      <tr>
+        <th>Patient</th>
+        <th>Systolic</th>
+        <th>Diastolic</th>
+        <th>Blood Sugar</th>
+        <th>Date & Time</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const form = document.getElementById('trackerForm');
+    const tableBody = document.querySelector('#recordsTable tbody');
+
+    // Load saved records
+    let records = JSON.parse(localStorage.getItem('healthRecords')) || [];
+    renderTable();
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const record = {
+        name: document.getElementById('name').value,
+        systolic: document.getElementById('systolic').value,
+        diastolic: document.getElementById('diastolic').value,
+        sugar: document.getElementById('sugar').value,
+        date: new Date().toLocaleString()
+      };
+      records.push(record);
+      localStorage.setItem('healthRecords', JSON.stringify(records));
+      renderTable();
+      form.reset();
+    });
+
+    function renderTable() {
+      tableBody.innerHTML = '';
+      records.forEach(r => {
+        const row = `<tr>
+          <td>${r.name}</td>
+          <td>${r.systolic}</td>
+          <td>${r.diastolic}</td>
+          <td>${r.sugar}</td>
+          <td>${r.date}</td>
+        </tr>`;
+        tableBody.innerHTML += row;
+      });
+    }
+  </script>
+</body>
+</html>
